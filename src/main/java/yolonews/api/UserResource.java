@@ -6,6 +6,7 @@ import yolonews.dto.UserDTO;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,22 +14,29 @@ import java.util.Map;
  * @author saket.mehta
  */
 @Path("/api/users")
-@Produces(MediaType.APPLICATION_JSON)
 public class UserResource {
     private Jedis jedis = new Jedis("localhost");
 
     @GET
     @Path("/{id}")
-    public User fetchUser(@PathParam("id") Long id) {
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response fetchUser(@PathParam("id") Long id) {
         Map<String, String> data = jedis.hgetAll("user:" + id);
-        return toUser(data);
+        if (data.size() == 0) {
+            throw new NotFoundException();
+        }
+        User user = toUser(data);
+        return Response.ok(user).build();
     }
 
     @POST
-    public void createUser(UserDTO userDTO) {
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createUser(UserDTO userDTO) {
         Boolean exists = jedis.exists("username.to.id:" + userDTO.getUsername().toLowerCase());
         if (exists) {
-            return;
+            throw new BadRequestException();
         }
         Long id = jedis.incr("users.count");
         Map<String, String> data = new HashMap<>();
@@ -39,15 +47,20 @@ public class UserResource {
         data.put("email", "");
         data.put("createdTime", String.valueOf(System.currentTimeMillis()));
         jedis.hmset("user:" + id, data);
+        jedis.set("username.to.id:" + userDTO.getUsername(), id.toString());
+        return Response.ok(data).build();
     }
 
     @PUT
     @Path("/{id}")
-    public void updateUser(UserDTO userDTO) {
-        jedis.hset("user:" + userDTO.getId(), "email", userDTO.getEmail());
-        if (userDTO.getPassword() != null || userDTO.getPassword().length() > 0) {
-            jedis.hset("user:" + userDTO.getId(), "password", userDTO.getPassword());
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateUser(UserDTO userDTO, @PathParam("id") Long id) {
+        jedis.hset("user:" + id, "email", userDTO.getEmail());
+        if (userDTO.getPassword() != null && userDTO.getPassword().length() > 0) {
+            jedis.hset("user:" + id, "password", userDTO.getPassword());
         }
+        return Response.ok().build();
     }
 
     private User toUser(Map<String, String> data) {
