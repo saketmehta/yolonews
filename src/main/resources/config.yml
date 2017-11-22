@@ -1,7 +1,14 @@
 server:
   applicationConnectors:
   - type: http
-    port: 9000
+    port: 7777
   adminConnectors:
   - type: http
-    port: 9001
+    port: 7778
+
+# Redis
+redisURL: localhost
+
+# Security
+tokenHeaderPrefix: Bearer
+tokenQueryParamKey: key

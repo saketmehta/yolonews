@@ -1,16 +1,8 @@
-package yolonews
+package yolonews.models
 
 /**
  * @author saket.mehta
  */
-data class User(
-        val id: Int,
-        val username: String,
-        val password: String,
-        val karma: Int = 0,
-        val email: String = "",
-        val createdTime: Long
-)
 
 data class Post(
         val id: Int,
