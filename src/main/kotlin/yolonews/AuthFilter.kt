@@ -1,23 +1,23 @@
 package yolonews
 
+import yolonews.api.Secured
 import yolonews.services.AuthService
-import javax.servlet.http.HttpServletRequest
+import javax.annotation.Priority
+import javax.ws.rs.Priorities
 import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.container.ContainerRequestFilter
-import javax.ws.rs.core.Context
 import javax.ws.rs.core.HttpHeaders
 import javax.ws.rs.core.Response
 
 /**
  * @author saket.mehta
  */
+@Secured
+@Priority(Priorities.AUTHENTICATION)
 class AuthFilter(private val tokenHeaderPrefix: String,
                  private val tokenQueryParamKey: String,
                  private val authService: AuthService
 ) : ContainerRequestFilter {
-    @Context
-    private val request: HttpServletRequest? = null
-
     override fun filter(requestContext: ContainerRequestContext) {
         try {
             val token = extractToken(requestContext)
@@ -32,6 +32,6 @@ class AuthFilter(private val tokenHeaderPrefix: String,
         if (authorizationHeader?.toLowerCase()?.startsWith(tokenHeaderPrefix.toLowerCase() + " ") ?: false) {
             return authorizationHeader.substring(tokenHeaderPrefix.length).trim()
         }
-        return request?.getParameter(tokenQueryParamKey) ?: throw Exception()
+        return requestContext.uriInfo.queryParameters[tokenQueryParamKey]?.toString() ?: throw Exception()
     }
 }
