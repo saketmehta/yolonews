@@ -23,7 +23,6 @@ class YOLONewsApp : Application<YOLONewsConfig>() {
     }
 
     override fun run(config: YOLONewsConfig, environment: Environment) {
-        // Initialise Redis
         val jedisPool = JedisPool(config.redisURL)
 
         // Resources

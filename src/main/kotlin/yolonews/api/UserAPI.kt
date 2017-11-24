@@ -25,20 +25,21 @@ class UserAPI(private val userService: UserService) {
 
     @POST
     fun createUser(user: User, @Context uriInfo: UriInfo): Response {
-        val createdUser = userService.createUser(user)
-        val builder = uriInfo.absolutePathBuilder
-        builder.path(createdUser.id.toString())
-        return Response.created(builder.build()).entity(createdUser).build()
+        try {
+            val createdUser = userService.createUser(user)
+            val builder = uriInfo.absolutePathBuilder
+            builder.path(createdUser.id.toString())
+            return Response.created(builder.build()).entity(createdUser).build()
+        } catch (e: Exception) {
+            throw BadRequestException()
+        }
     }
 
     @Secured
     @PUT
     @Path("/{id}")
     fun updateUser(user: User, @PathParam("id") id: Long): Response {
-        if (user.id != id) {
-            throw ForbiddenException()
-        }
-        userService.updateUser(user)
+        userService.updateUser(user.copy(id = id))
         return Response.ok().build()
     }
 }

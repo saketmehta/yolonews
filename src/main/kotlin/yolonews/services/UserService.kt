@@ -16,7 +16,7 @@ class UserService(private val jedisPool: JedisPool) {
 
     fun createUser(user: User): User {
         jedisPool.resource.use {
-            val exists = it.exists("username.to.id:" + user.username.toLowerCase())
+            val exists = it.exists("username.to.id:" + user.username?.toLowerCase())
             if (!exists) {
                 val id = it.incr("users.count")
                 val createdUser = user.copy(id = id)

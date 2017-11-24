@@ -3,7 +3,6 @@ package yolonews.models
 /**
  * @author saket.mehta
  */
-
 data class Post(
         val id: Int,
         val title: String,
@@ -15,15 +14,5 @@ data class Post(
         val upvotes: Int,
         val downvotes: Int,
         val comments: Int,
-        val createdTime: Long
-)
-
-data class Comment(
-        val id: Int,
-        val text: String,
-        val userId: Int,
-        val parentId: Int,
-        val score: Int,
-        val upvotes: Int,
         val createdTime: Long
 )
