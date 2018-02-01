@@ -1,4 +1,4 @@
-package yolonews.api
+package com.yolonews.api
 
 import yolonews.services.FeedService
 import javax.ws.rs.*

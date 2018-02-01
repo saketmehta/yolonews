@@ -5,5 +5,9 @@
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true" />
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="yolonews_main" target="1.9" />
+      <module name="yolonews_test" target="1.9" />
+    </bytecodeTargetLevel>
   </component>
 </project>

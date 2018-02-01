@@ -1,4 +1,4 @@
-package yolonews
+package com.yolonews
 
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import io.dropwizard.Application
@@ -7,7 +7,7 @@ import io.dropwizard.setup.Environment
 import redis.clients.jedis.JedisPool
 import yolonews.api.AuthAPI
 import yolonews.api.UserAPI
-import yolonews.services.AuthService
+import com.yolonews.services.AuthService
 import yolonews.services.UserService
 
 

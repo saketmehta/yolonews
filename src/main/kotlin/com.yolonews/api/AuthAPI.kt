@@ -1,6 +1,6 @@
-package yolonews.api
+package com.yolonews.api
 
-import yolonews.services.AuthService
+import com.yolonews.services.AuthService
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
 import javax.ws.rs.core.Response

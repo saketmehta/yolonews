@@ -1,44 +1,25 @@
-group 'me.saketmehta'
+group 'com.sudosaket'
 version '0.1'
 
-buildscript {
-    ext.kotlin_version = '1.1.60'
-
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
-
 apply plugin: 'java'
-apply plugin: 'kotlin'
 apply plugin: 'application'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 9
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    compile "io.dropwizard:dropwizard-core:1.2.2"
+    compile "com.google.inject:guice:4.1.0"
     compile "redis.clients:jedis:2.9.0"
-    compile "io.dropwizard:dropwizard-core:1.2.0"
-    compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.0"
+    compile "org.apache.commons:commons-lang3:3.7"
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-}
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-}
-
-mainClassName = "yolonews.YOLONews"
+mainClassName = "com.yolonews.YoloNewsApp"
 
 run {
     args += ["server", "src/main/resources/config.yml"]

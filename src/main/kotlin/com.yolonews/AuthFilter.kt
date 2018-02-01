@@ -1,7 +1,7 @@
-package yolonews
+package com.yolonews
 
 import yolonews.api.Secured
-import yolonews.services.AuthService
+import com.yolonews.services.AuthService
 import javax.annotation.Priority
 import javax.ws.rs.Priorities
 import javax.ws.rs.container.ContainerRequestContext

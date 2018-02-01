@@ -5,10 +5,3 @@ server:
   adminConnectors:
   - type: http
     port: 7778
-
-# Redis
-redisURL: localhost
-
-# Security
-tokenHeaderPrefix: Bearer
-tokenQueryParamKey: key

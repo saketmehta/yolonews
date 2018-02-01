@@ -1,4 +1,4 @@
-package yolonews.services
+package com.yolonews.services
 
 import redis.clients.jedis.JedisPool
 import java.math.BigInteger
