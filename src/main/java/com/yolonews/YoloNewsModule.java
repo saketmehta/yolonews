@@ -14,7 +14,7 @@ import redis.clients.jedis.JedisPool;
 /**
  * @author saket.mehta
  */
-public class YoloNewsModule extends AbstractModule {
+class YoloNewsModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(JedisPool.class).toProvider(JedisPoolProvider.class).in(Singleton.class);

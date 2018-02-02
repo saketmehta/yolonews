@@ -6,7 +6,7 @@ import redis.clients.jedis.JedisPool;
 /**
  * @author saket.mehta
  */
-public class JedisPoolProvider implements Provider<JedisPool> {
+class JedisPoolProvider implements Provider<JedisPool> {
     @Override
     public JedisPool get() {
         return new JedisPool();

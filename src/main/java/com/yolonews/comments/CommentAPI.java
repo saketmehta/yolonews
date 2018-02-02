@@ -27,10 +27,7 @@ public class CommentAPI {
     @Path("/{commentId}")
     public Response fetchComment(@PathParam("commentId") Long commentId) {
         Optional<Comment> comment = this.commentService.fetchComment(commentId);
-        if (comment.isPresent()) {
-            return Response.ok(comment.get()).build();
-        }
-        return Response.status(NOT_FOUND).build();
+        return comment.map(c -> Response.ok(c).build()).orElseGet(() -> Response.status(NOT_FOUND).build());
     }
 
     @POST

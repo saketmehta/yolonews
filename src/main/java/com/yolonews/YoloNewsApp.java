@@ -12,7 +12,7 @@ import io.dropwizard.setup.Environment;
 /**
  * @author saket.mehta
  */
-public class YoloNewsApp extends Application<YoloNewsConfig> {
+class YoloNewsApp extends Application<YoloNewsConfig> {
 
     public static void main(String[] args) throws Exception {
         new YoloNewsApp().run(args);
