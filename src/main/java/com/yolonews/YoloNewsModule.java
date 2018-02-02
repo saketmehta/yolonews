@@ -9,6 +9,8 @@ import com.yolonews.posts.PostService;
 import com.yolonews.posts.PostServiceImpl;
 import com.yolonews.votes.VoteDAO;
 import com.yolonews.votes.VoteDAORedis;
+import com.yolonews.votes.VoteService;
+import com.yolonews.votes.VoteServiceImpl;
 import redis.clients.jedis.JedisPool;
 
 /**
@@ -27,5 +29,6 @@ class YoloNewsModule extends AbstractModule {
         bind(AuthService.class).to(AuthServiceImpl.class);
         bind(UserService.class).to(UserServiceImpl.class);
         bind(PostService.class).to(PostServiceImpl.class);
+        bind(VoteService.class).to(VoteServiceImpl.class);
     }
 }

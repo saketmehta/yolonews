@@ -1,11 +1,11 @@
 package com.yolonews.comments;
 
-import com.yolonews.common.BaseModel;
+import com.yolonews.common.BaseEntity;
 
 /**
  * @author saket.mehta
  */
-public class Comment extends BaseModel {
+public class Comment extends BaseEntity {
     private Long id;
     private String text;
     private Long userId;

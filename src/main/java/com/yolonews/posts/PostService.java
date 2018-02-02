@@ -8,5 +8,5 @@ import java.util.Optional;
 public interface PostService {
     Optional<Post> fetchPost(Long postId);
 
-    Post createPost(Post post);
+    Long createPost(Post post, Long userId);
 }

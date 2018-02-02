@@ -1,8 +1,9 @@
 package com.yolonews.votes;
 
+import com.yolonews.common.BaseDAO;
+
 /**
  * @author saket.mehta
  */
-public interface VoteDAO {
-    void insert(Long postId, Long userId, VoteType voteType);
+public interface VoteDAO extends BaseDAO<Vote, Long> {
 }

@@ -1,10 +1,9 @@
 package com.yolonews.posts;
 
+import com.yolonews.common.BaseDAO;
+
 /**
  * @author saket.mehta
  */
-public interface PostDAO {
-    Long insert(String title, String url, String text, Long userId);
-
-    Post findById(Long postId);
+public interface PostDAO extends BaseDAO<Post, Long> {
 }

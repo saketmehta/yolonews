@@ -1,6 +1,7 @@
 package com.yolonews.auth;
 
-import com.yolonews.common.BaseModel;
+import com.yolonews.common.BaseEntity;
+import com.yolonews.common.Mappable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,37 +9,37 @@ import java.util.Map;
 /**
  * @author saket.mehta
  */
-public class User extends BaseModel {
+public class User extends BaseEntity implements Mappable {
     private Long id;
     private String username;
     private String password;
     private String email;
     private Long karma;
 
-    public static User fromMap(Map<String, String> map) {
+    @Override
+    public void fromMap(Map<String, String> map) {
         if (map == null) {
             throw new IllegalArgumentException("map is null");
         }
-        User user = new User();
-        user.setId(Long.valueOf(map.get("id")));
-        user.setEmail(map.get("email"));
-        user.setUsername(map.get("username"));
-        user.setPassword(map.get("password"));
-        user.setKarma(Long.valueOf(map.get("karma")));
-        user.setCreatedTime(Long.valueOf(map.get("createdTime")));
-        user.setModifiedTime(Long.valueOf(map.get("modifiedTime")));
-        return user;
+        this.setId(Long.valueOf(map.get("id")));
+        this.setEmail(map.get("email"));
+        this.setUsername(map.get("username"));
+        this.setPassword(map.get("password"));
+        this.setKarma(Long.valueOf(map.get("karma")));
+        this.setCreatedTime(Long.valueOf(map.get("createdTime")));
+        this.setModifiedTime(Long.valueOf(map.get("modifiedTime")));
     }
 
-    public static Map<String, String> toMap(User user) {
+    @Override
+    public Map<String, String> toMap() {
         Map<String, String> result = new HashMap<>();
-        result.put("id", String.valueOf(user.getId()));
-        result.put("email", user.getEmail());
-        result.put("username", user.getUsername());
-        result.put("password", user.getPassword());
-        result.put("karma", String.valueOf(user.getKarma()));
-        result.put("createdTime", String.valueOf(user.getCreatedTime()));
-        result.put("modifiedTime", String.valueOf(user.getModifiedTime()));
+        result.put("id", String.valueOf(this.getId()));
+        result.put("email", this.getEmail());
+        result.put("username", this.getUsername());
+        result.put("password", this.getPassword());
+        result.put("karma", String.valueOf(this.getKarma()));
+        result.put("createdTime", String.valueOf(this.getCreatedTime()));
+        result.put("modifiedTime", String.valueOf(this.getModifiedTime()));
         return result;
     }
 

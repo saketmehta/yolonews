@@ -1,23 +1,16 @@
 package com.yolonews.common;
 
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-
-import java.util.function.Function;
+import java.util.Optional;
 
 /**
  * @author saket.mehta
  */
-public abstract class BaseDAO {
-    private final JedisPool jedisPool;
+public interface BaseDAO<Entity extends BaseEntity, ID> {
+    ID insert(Entity entity);
 
-    protected BaseDAO(JedisPool jedisPool) {
-        this.jedisPool = jedisPool;
-    }
+    Optional<Entity> findById(ID id);
 
-    protected <E> E tryWithJedis(Function<Jedis, E> function) {
-        try (Jedis jedis = jedisPool.getResource()) {
-            return function.apply(jedis);
-        }
-    }
+    void update(Entity entity);
+
+    void delete(ID entityId);
 }

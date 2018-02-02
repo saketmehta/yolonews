@@ -10,5 +10,5 @@ public interface UserService {
 
     Optional<User> fetchUser(Long userId);
 
-    User updateUser(Long userId, String newUsername, String newEmail);
+    void updateUser(Long userId, String newUsername, String newEmail);
 }

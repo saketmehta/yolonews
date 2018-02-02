@@ -51,14 +51,15 @@ public class UserAPI {
 
     @POST
     @Path("/{userId}")
+    @Secured
     public Response updateUser(@PathParam("userId") Long userId, UserDTO dto,
                                @Context SecurityContext context) {
         Long currentUserId = Long.valueOf(context.getUserPrincipal().getName());
         if (!currentUserId.equals(userId)) {
             throw new ForbiddenException();
         }
-        User user = this.userService.updateUser(userId, dto.username, dto.email);
-        return Response.ok(user).build();
+        userService.updateUser(userId, dto.username, dto.email);
+        return Response.ok().build();
     }
 
     private static class UserDTO {
@@ -70,24 +71,12 @@ public class UserAPI {
             return username;
         }
 
-        public void setUsername(String username) {
-            this.username = username;
-        }
-
         public String getEmail() {
             return email;
         }
 
-        public void setEmail(String email) {
-            this.email = email;
-        }
-
         public String getPassword() {
             return password;
-        }
-
-        public void setPassword(String password) {
-            this.password = password;
         }
 
         User toUser() {

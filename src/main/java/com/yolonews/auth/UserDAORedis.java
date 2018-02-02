@@ -1,34 +1,66 @@
 package com.yolonews.auth;
 
 import com.google.inject.Inject;
-import com.yolonews.common.BaseDAO;
+import com.yolonews.common.AbstractDAORedis;
 import org.apache.commons.lang3.StringUtils;
+import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 /**
  * @author saket.mehta
  */
-public class UserDAORedis extends BaseDAO implements UserDAO {
+public class UserDAORedis extends AbstractDAORedis<User, Long> implements UserDAO {
     @Inject
     public UserDAORedis(JedisPool jedisPool) {
         super(jedisPool);
     }
 
     @Override
-    public Optional<User> findById(long userId) {
-        return tryWithJedis(jedis -> {
-            Map<String, String> data = jedis.hgetAll("user:" + userId);
-            if (data != null) {
-                User user = User.fromMap(data);
-                return Optional.of(user);
-            } else {
-                return Optional.empty();
-            }
-        });
+    protected Long handleInsert(Jedis jedis, User user) {
+        if (jedis.exists("username.to.id:" + user.getUsername().toLowerCase())) {
+            throw new IllegalArgumentException("username taken");
+        }
+        Long id = jedis.incr("users.count");
+        user.setId(id);
+        long now = System.currentTimeMillis();
+        user.setCreatedTime(now);
+        user.setModifiedTime(now);
+        jedis.hmset("user:" + id, user.toMap());
+        jedis.set("username.to.id:" + user.getUsername(), String.valueOf(id));
+        return id;
+    }
+
+    @Override
+    protected Optional<User> handleFindById(Jedis jedis, Long userId) {
+        Map<String, String> data = jedis.hgetAll("user:" + userId);
+        if (data != null && !data.isEmpty()) {
+            User user = new User();
+            user.fromMap(data);
+            return Optional.of(user);
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    protected Void handleUpdate(Jedis jedis, User user) {
+        if (jedis.exists("user:" + user.getId())) {
+            findById(user.getId()).map(u -> {
+                u.setEmail(user.getEmail());
+                u.setUsername(user.getUsername());
+                u.setModifiedTime(System.currentTimeMillis());
+                return u;
+            }).ifPresent(u -> jedis.hmset("user:" + user.getId(), user.toMap()));
+        }
+        return null;
+    }
+
+    @Override
+    protected Void handleDelete(Jedis jedis, Long entityId) {
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
     @Override
@@ -42,25 +74,6 @@ public class UserDAORedis extends BaseDAO implements UserDAO {
                 return Optional.empty();
             }
             return findById(Long.valueOf(userId));
-        });
-    }
-
-    @Override
-    public Long insert(String username, String password, String email) {
-        return tryWithJedis(jedis -> {
-            if (jedis.exists("username.to.id:" + username.toLowerCase())) {
-                throw new IllegalArgumentException("username taken");
-            }
-            Long id = jedis.incr("users.count");
-            Map<String, String> data = new HashMap<>();
-            data.put("id", String.valueOf(id));
-            data.put("username", username);
-            data.put("password", password);
-            data.put("email", email);
-            data.put("karma", String.valueOf(1));
-            jedis.hmset("user:" + id, data);
-            jedis.set("username.to.id:" + username, String.valueOf(id));
-            return id;
         });
     }
 }

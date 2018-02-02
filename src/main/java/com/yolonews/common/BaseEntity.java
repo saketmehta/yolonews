@@ -3,7 +3,7 @@ package com.yolonews.common;
 /**
  * @author saket.mehta
  */
-public abstract class BaseModel {
+public abstract class BaseEntity {
     private long createdTime;
     private long modifiedTime;
 

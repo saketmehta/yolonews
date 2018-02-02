@@ -17,11 +17,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Optional<Post> fetchPost(Long postId) {
-        return Optional.empty();
+        return postDAO.findById(postId);
     }
 
     @Override
-    public Post createPost(Post post) {
-        return null;
+    public Long createPost(Post post, Long userId) {
+        return postDAO.insert(post);
     }
 }

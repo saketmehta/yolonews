@@ -1,37 +1,52 @@
 package com.yolonews.votes;
 
 import com.google.inject.Inject;
-import com.yolonews.common.BaseDAO;
+import com.yolonews.common.AbstractDAORedis;
+import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+
+import java.util.Optional;
 
 /**
  * @author saket.mehta
  */
-public class VoteDAORedis extends BaseDAO implements VoteDAO {
-
+public class VoteDAORedis extends AbstractDAORedis<Vote, Long> implements VoteDAO {
     @Inject
     public VoteDAORedis(JedisPool jedisPool) {
         super(jedisPool);
     }
 
     @Override
-    public void insert(Long postId, Long userId, VoteType voteType) {
-        tryWithJedis(jedis -> {
-            Long added = jedis.zadd("posts." + voteType.toString().toLowerCase() + ":" + postId,
-                    System.currentTimeMillis(), String.valueOf(userId));
-            if (added > 0) {
-                String voteField = null;
-                switch (voteType) {
-                    case UP:
-                        voteField = "upvotes";
-                        break;
-                    case DOWN:
-                        voteField = "downvotes";
-                        break;
-                }
-                jedis.hincrBy("posts:" + postId, voteField, 1);
+    protected Long handleInsert(Jedis jedis, Vote vote) {
+        Long added = jedis.zadd("posts." + vote.getVoteType().toString().toLowerCase() + ":" + vote.getPostId(),
+                vote.getCreatedTime(), String.valueOf(vote.getUserId()));
+        if (added > 0) {
+            String voteField = null;
+            switch (vote.getVoteType()) {
+                case UP:
+                    voteField = "upvotes";
+                    break;
+                case DOWN:
+                    voteField = "downvotes";
+                    break;
             }
-            return null;
-        });
+            jedis.hincrBy("posts:" + vote.getPostId(), voteField, 1);
+        }
+        return null;
+    }
+
+    @Override
+    protected Optional<Vote> handleFindById(Jedis jedis, Long voteId) {
+        throw new UnsupportedOperationException("not yet implemented");
+    }
+
+    @Override
+    protected Void handleUpdate(Jedis jedis, Vote vote) {
+        throw new UnsupportedOperationException("not yet implemented");
+    }
+
+    @Override
+    protected Void handleDelete(Jedis jedis, Long voteId) {
+        throw new UnsupportedOperationException("not yet implemented");
     }
 }

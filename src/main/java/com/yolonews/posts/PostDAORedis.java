@@ -1,46 +1,51 @@
 package com.yolonews.posts;
 
 import com.google.inject.Inject;
-import com.yolonews.common.BaseDAO;
+import com.yolonews.common.AbstractDAORedis;
+import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author saket.mehta
  */
-public class PostDAORedis extends BaseDAO implements PostDAO {
+public class PostDAORedis extends AbstractDAORedis<Post, Long> implements PostDAO {
     @Inject
     public PostDAORedis(JedisPool jedisPool) {
         super(jedisPool);
     }
 
     @Override
-    public Long insert(String title, String url, String text, Long userId) {
-        return tryWithJedis(jedis -> {
-            Long id = jedis.incr("posts.count");
-            Map<String, String> hash = new HashMap<>();
-            hash.put("id", "id");
-            hash.put("title", title);
-            hash.put("url", url);
-            hash.put("text", text);
-            hash.put("userId", String.valueOf(userId));
-            hash.put("createdTime", String.valueOf(System.currentTimeMillis()));
-            hash.put("score", "0");
-            hash.put("rank", "0");
-            hash.put("upvotes", "0");
-            hash.put("downvotes", "0");
-            jedis.hmset("posts:" + id, hash);
-            return id;
-        });
+    protected Long handleInsert(Jedis jedis, Post post) {
+        Long id = jedis.incr("posts.count");
+        post.setId(id);
+        long now = System.currentTimeMillis();
+        post.setCreatedTime(now);
+        post.setModifiedTime(now);
+        jedis.hmset("posts:" + id, post.toMap());
+        return id;
     }
 
     @Override
-    public Post findById(Long postId) {
-        return tryWithJedis(jedis -> {
-            Map<String, String> data = jedis.hgetAll("posts:" + postId);
-            return Post.fromMap(data);
-        });
+    protected Optional<Post> handleFindById(Jedis jedis, Long postId) {
+        Map<String, String> data = jedis.hgetAll("posts:" + postId);
+        if (data == null || data.isEmpty()) {
+            return Optional.empty();
+        }
+        Post post = new Post();
+        post.fromMap(data);
+        return Optional.of(post);
+    }
+
+    @Override
+    protected Void handleUpdate(Jedis jedis, Post entity) {
+        throw new UnsupportedOperationException("not yet implemented");
+    }
+
+    @Override
+    protected Void handleDelete(Jedis jedis, Long entityId) {
+        throw new UnsupportedOperationException("not yet implemented");
     }
 }

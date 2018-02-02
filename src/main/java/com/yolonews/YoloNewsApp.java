@@ -4,6 +4,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.yolonews.auth.AuthAPI;
 import com.yolonews.auth.AuthFilter;
+import com.yolonews.auth.SecurityContextFilter;
 import com.yolonews.auth.UserAPI;
 import com.yolonews.posts.PostAPI;
 import io.dropwizard.Application;
@@ -28,6 +29,7 @@ class YoloNewsApp extends Application<YoloNewsConfig> {
         environment.jersey().register(injector.getInstance(PostAPI.class));
 
         // filters
+        environment.jersey().register(injector.getInstance(SecurityContextFilter.class));
         environment.jersey().register(injector.getInstance(AuthFilter.class));
     }
 }

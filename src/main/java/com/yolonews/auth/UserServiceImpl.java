@@ -17,7 +17,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Long createUser(User user) {
-        return userDAO.insert(user.getUsername(), user.getPassword(), user.getEmail());
+        user.setKarma(0L);
+        return userDAO.insert(user);
     }
 
     @Override
@@ -26,8 +27,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(Long userId, String newUsername, String newEmail) {
-        // todo
-        return null;
+    public void updateUser(Long userId, String newUsername, String newEmail) {
+        userDAO.findById(userId).ifPresent(user -> {
+            user.setUsername(newUsername);
+            user.setEmail(newEmail);
+            userDAO.update(user);
+        });
     }
 }
