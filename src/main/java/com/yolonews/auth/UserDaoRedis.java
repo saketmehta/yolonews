@@ -2,7 +2,7 @@ package com.yolonews.auth;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
-import com.yolonews.common.AbstractDAORedis;
+import com.yolonews.common.AbstractDaoRedis;
 import org.apache.commons.lang3.StringUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -14,9 +14,9 @@ import java.util.Optional;
 /**
  * @author saket.mehta
  */
-public class UserDAORedis extends AbstractDAORedis<User, Long> implements UserDAO {
+public class UserDaoRedis extends AbstractDaoRedis<User, Long> implements UserDao {
     @Inject
-    public UserDAORedis(JedisPool jedisPool) {
+    public UserDaoRedis(JedisPool jedisPool) {
         super(jedisPool);
     }
 

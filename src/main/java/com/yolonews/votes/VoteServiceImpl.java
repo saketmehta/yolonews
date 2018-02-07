@@ -6,10 +6,10 @@ import com.google.inject.Inject;
  * @author saket.mehta
  */
 public class VoteServiceImpl implements VoteService {
-    private final VoteDAO voteDAO;
+    private final VoteDao voteDAO;
 
     @Inject
-    public VoteServiceImpl(VoteDAO voteDAO) {
+    public VoteServiceImpl(VoteDao voteDAO) {
         this.voteDAO = voteDAO;
     }
 

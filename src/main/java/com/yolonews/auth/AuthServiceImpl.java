@@ -11,10 +11,10 @@ import java.util.Optional;
  */
 public class AuthServiceImpl implements AuthService {
     private final AuthDAO authDAO;
-    private final UserDAO userDAO;
+    private final UserDao userDAO;
 
     @Inject
-    public AuthServiceImpl(AuthDAO authDAO, UserDAO userDAO) {
+    public AuthServiceImpl(AuthDAO authDAO, UserDao userDAO) {
         this.authDAO = authDAO;
         this.userDAO = userDAO;
     }

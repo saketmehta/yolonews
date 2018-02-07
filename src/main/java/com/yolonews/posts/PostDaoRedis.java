@@ -2,7 +2,7 @@ package com.yolonews.posts;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
-import com.yolonews.common.AbstractDAORedis;
+import com.yolonews.common.AbstractDaoRedis;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
@@ -13,9 +13,9 @@ import java.util.Optional;
 /**
  * @author saket.mehta
  */
-public class PostDAORedis extends AbstractDAORedis<Post, Long> implements PostDAO {
+public class PostDaoRedis extends AbstractDaoRedis<Post, Long> implements PostDao {
     @Inject
-    public PostDAORedis(JedisPool jedisPool) {
+    public PostDaoRedis(JedisPool jedisPool) {
         super(jedisPool);
     }
 

@@ -8,10 +8,10 @@ import java.util.Optional;
  * @author saket.mehta
  */
 public class UserServiceImpl implements UserService {
-    private final UserDAO userDAO;
+    private final UserDao userDAO;
 
     @Inject
-    public UserServiceImpl(UserDAO userDAO) {
+    public UserServiceImpl(UserDao userDAO) {
         this.userDAO = userDAO;
     }
 

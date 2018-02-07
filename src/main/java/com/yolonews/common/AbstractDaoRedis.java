@@ -11,10 +11,10 @@ import java.util.function.Function;
 /**
  * @author saket.mehta
  */
-public abstract class AbstractDAORedis<Entity extends BaseEntity, ID> implements BaseDAO<Entity, ID> {
+public abstract class AbstractDaoRedis<Entity, ID> implements CrudDao<Entity, ID> {
     private final JedisPool jedisPool;
 
-    protected AbstractDAORedis(JedisPool jedisPool) {
+    protected AbstractDaoRedis(JedisPool jedisPool) {
         this.jedisPool = jedisPool;
     }
 

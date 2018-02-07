@@ -1,7 +1,7 @@
 package com.yolonews.votes;
 
 import com.google.inject.Inject;
-import com.yolonews.common.AbstractDAORedis;
+import com.yolonews.common.AbstractDaoRedis;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
@@ -11,9 +11,9 @@ import java.util.Optional;
 /**
  * @author saket.mehta
  */
-public class VoteDAORedis extends AbstractDAORedis<Vote, Long> implements VoteDAO {
+public class VoteDaoRedis extends AbstractDaoRedis<Vote, Long> implements VoteDao {
     @Inject
-    public VoteDAORedis(JedisPool jedisPool) {
+    public VoteDaoRedis(JedisPool jedisPool) {
         super(jedisPool);
     }
 

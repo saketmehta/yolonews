@@ -8,10 +8,10 @@ import java.util.Optional;
  * @author saket.mehta
  */
 public class PostServiceImpl implements PostService {
-    private final PostDAO postDAO;
+    private final PostDao postDAO;
 
     @Inject
-    public PostServiceImpl(PostDAO postDAO) {
+    public PostServiceImpl(PostDao postDAO) {
         this.postDAO = postDAO;
     }
 

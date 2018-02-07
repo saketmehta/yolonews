@@ -5,7 +5,7 @@ import java.util.Optional;
 /**
  * @author saket.mehta
  */
-public interface BaseDAO<Entity extends BaseEntity, ID> {
+public interface CrudDao<Entity, ID> extends Dao<Entity, ID> {
     ID save(Entity entity);
 
     Optional<Entity> findById(ID id);

@@ -1,12 +1,12 @@
 package com.yolonews.auth;
 
-import com.yolonews.common.BaseDAO;
+import com.yolonews.common.CrudDao;
 
 import java.util.Optional;
 
 /**
  * @author saket.mehta
  */
-public interface UserDAO extends BaseDAO<User, Long> {
+public interface UserDao extends CrudDao<User, Long> {
     Optional<User> findByUsername(String username);
 }
