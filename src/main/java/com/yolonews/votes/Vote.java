@@ -1,24 +1,21 @@
 package com.yolonews.votes;
 
 import com.yolonews.common.BaseEntity;
-import com.yolonews.common.Mappable;
-
-import java.util.Map;
 
 /**
  * @author saket.mehta
  */
-public class Vote extends BaseEntity implements Mappable {
-    private Long id;
+public class Vote extends BaseEntity {
+    private long id;
     private VoteType voteType;
-    private Long userId;
-    private Long postId;
+    private long userId;
+    private long postId;
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -30,30 +27,20 @@ public class Vote extends BaseEntity implements Mappable {
         this.voteType = voteType;
     }
 
-    public Long getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 
-    public Long getPostId() {
+    public long getPostId() {
         return postId;
     }
 
-    public void setPostId(Long postId) {
+    public void setPostId(long postId) {
         this.postId = postId;
-    }
-
-    @Override
-    public void fromMap(Map<String, String> map) {
-        throw new UnsupportedOperationException("no need for this yet");
-    }
-
-    @Override
-    public Map<String, String> toMap() {
-        throw new UnsupportedOperationException("no need for this yet");
     }
 
     public enum VoteType {

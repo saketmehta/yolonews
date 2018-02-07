@@ -1,15 +1,17 @@
 package com.yolonews.common;
 
+import com.google.common.base.Preconditions;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
 /**
  * @author saket.mehta
  */
-public abstract class AbstractDAORedis<Entity extends BaseEntity & Mappable, ID> implements BaseDAO<Entity, ID> {
+public abstract class AbstractDAORedis<Entity extends BaseEntity, ID> implements BaseDAO<Entity, ID> {
     private final JedisPool jedisPool;
 
     protected AbstractDAORedis(JedisPool jedisPool) {
@@ -17,36 +19,36 @@ public abstract class AbstractDAORedis<Entity extends BaseEntity & Mappable, ID>
     }
 
     @Override
-    public ID insert(Entity entity) {
-        return tryWithJedis(jedis -> handleInsert(jedis, entity));
+    public ID save(Entity entity) {
+        Preconditions.checkNotNull(entity, "Entity is null");
+        return tryWithJedis(jedis -> handleSave(jedis, entity));
     }
 
     @Override
     public Optional<Entity> findById(ID entityId) {
+        Preconditions.checkNotNull(entityId, "ID is null");
         return tryWithJedis(jedis -> handleFindById(jedis, entityId));
     }
 
     @Override
-    public void update(Entity entity) {
-        tryWithJedis(jedis -> handleUpdate(jedis, entity));
-    }
-
-    @Override
     public void delete(ID entityId) {
+        Preconditions.checkNotNull(entityId, "ID is null");
         tryWithJedis(jedis -> handleDelete(jedis, entityId));
     }
-
-    protected abstract ID handleInsert(Jedis jedis, Entity entity);
-
-    protected abstract Optional<Entity> handleFindById(Jedis jedis, ID entityId);
-
-    protected abstract Void handleUpdate(Jedis jedis, Entity entity);
-
-    protected abstract Void handleDelete(Jedis jedis, ID entityId);
 
     protected <E> E tryWithJedis(Function<Jedis, E> function) {
         try (Jedis jedis = jedisPool.getResource()) {
             return function.apply(jedis);
         }
     }
+
+    protected abstract ID handleSave(Jedis jedis, Entity entity);
+
+    protected abstract Optional<Entity> handleFindById(Jedis jedis, ID entityId);
+
+    protected abstract Void handleDelete(Jedis jedis, ID entityId);
+
+    protected abstract Entity fromMap(Map<String, String> map);
+
+    protected abstract Map<String, String> toMap(Entity entity);
 }

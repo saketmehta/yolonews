@@ -22,6 +22,6 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Long createPost(Post post, Long userId) {
-        return postDAO.insert(post);
+        return postDAO.save(post);
     }
 }

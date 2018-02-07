@@ -1,60 +1,26 @@
 package com.yolonews.posts;
 
 import com.yolonews.common.BaseEntity;
-import com.yolonews.common.Mappable;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author saket.mehta
  */
-public class Post extends BaseEntity implements Mappable {
-    private Long id;
+public class Post extends BaseEntity {
+    private long id;
     private String title;
     private String url;
     private String userId;
-    private Long score;
-    private Long rank;
-    private Long upvotes;
-    private Long downvotes;
-    private Boolean deleted;
+    private long score;
+    private long rank;
+    private long upvotes;
+    private long downvotes;
+    private boolean deleted;
 
-    @Override
-    public void fromMap(Map<String, String> map) {
-        this.setId(Long.valueOf(map.get("id")));
-        this.setTitle(map.get("title"));
-        this.setUrl(map.get("url"));
-        this.setUserId(map.get("userId"));
-        this.setScore(Long.valueOf(map.get("score")));
-        this.setRank(Long.valueOf(map.get("rank")));
-        this.setUpvotes(Long.valueOf(map.get("upvotes")));
-        this.setDownvotes(Long.valueOf(map.get("downvotes")));
-        this.setCreatedTime(Long.valueOf(map.get("createdTime")));
-        this.setModifiedTime(Long.valueOf(map.get("modifiedTime")));
-    }
-
-    @Override
-    public Map<String, String> toMap() {
-        Map<String, String> map = new HashMap<>();
-        map.put("id", String.valueOf(this.getId()));
-        map.put("title", this.getTitle());
-        map.put("url", this.getUrl());
-        map.put("userId", this.getUserId());
-        map.put("score", String.valueOf(this.getScore()));
-        map.put("rank", String.valueOf(this.getRank()));
-        map.put("upvotes", String.valueOf(this.getUpvotes()));
-        map.put("downvotes", String.valueOf(this.getDownvotes()));
-        map.put("createdTime", String.valueOf(this.getCreatedTime()));
-        map.put("modifiedTime", String.valueOf(this.getModifiedTime()));
-        return map;
-    }
-
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -82,43 +48,43 @@ public class Post extends BaseEntity implements Mappable {
         this.userId = userId;
     }
 
-    public Long getScore() {
+    public long getScore() {
         return score;
     }
 
-    public void setScore(Long score) {
+    public void setScore(long score) {
         this.score = score;
     }
 
-    public Long getRank() {
+    public long getRank() {
         return rank;
     }
 
-    public void setRank(Long rank) {
+    public void setRank(long rank) {
         this.rank = rank;
     }
 
-    public Long getUpvotes() {
+    public long getUpvotes() {
         return upvotes;
     }
 
-    public void setUpvotes(Long upvotes) {
+    public void setUpvotes(long upvotes) {
         this.upvotes = upvotes;
     }
 
-    public Long getDownvotes() {
+    public long getDownvotes() {
         return downvotes;
     }
 
-    public void setDownvotes(Long downvotes) {
+    public void setDownvotes(long downvotes) {
         this.downvotes = downvotes;
     }
 
-    public Boolean getDeleted() {
+    public boolean isDeleted() {
         return deleted;
     }
 
-    public void setDeleted(Boolean deleted) {
+    public void setDeleted(boolean deleted) {
         this.deleted = deleted;
     }
 }

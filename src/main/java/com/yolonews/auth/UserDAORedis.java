@@ -1,11 +1,13 @@
 package com.yolonews.auth;
 
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.yolonews.common.AbstractDAORedis;
 import org.apache.commons.lang3.StringUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -19,61 +21,79 @@ public class UserDAORedis extends AbstractDAORedis<User, Long> implements UserDA
     }
 
     @Override
-    protected Long handleInsert(Jedis jedis, User user) {
-        if (jedis.exists("username.to.id:" + user.getUsername().toLowerCase())) {
-            throw new IllegalArgumentException("username taken");
-        }
-        Long id = jedis.incr("users.count");
-        user.setId(id);
+    public Optional<User> findByUsername(String username) {
+        Preconditions.checkArgument(StringUtils.isEmpty(username), "username is empty");
+
+        return tryWithJedis(jedis -> {
+            String userId = jedis.get("username.to.id:" + username);
+            if (StringUtils.isEmpty(userId)) {
+                return Optional.empty();
+            }
+            return findById(Long.valueOf(userId));
+        });
+    }
+
+    @Override
+    protected Long handleSave(Jedis jedis, User user) {
         long now = System.currentTimeMillis();
-        user.setCreatedTime(now);
-        user.setModifiedTime(now);
-        jedis.hmset("user:" + id, user.toMap());
-        jedis.set("username.to.id:" + user.getUsername(), String.valueOf(id));
-        return id;
+        if (user.getId() > 0) {
+            // update
+            user.setModifiedTime(now);
+            jedis.hmset("user:" + user.getId(), toMap(user));
+            jedis.set("username.to.id:" + user.getUsername(), String.valueOf(user.getId()));
+        } else {
+            // create
+            Long id = jedis.incr("users.count");
+            user.setId(id);
+            user.setCreatedTime(now);
+            user.setModifiedTime(now);
+            jedis.hmset("user:" + id, toMap(user));
+            jedis.set("username.to.id:" + user.getUsername(), String.valueOf(id));
+        }
+        return user.getId();
     }
 
     @Override
     protected Optional<User> handleFindById(Jedis jedis, Long userId) {
         Map<String, String> data = jedis.hgetAll("user:" + userId);
-        if (data != null && !data.isEmpty()) {
-            User user = new User();
-            user.fromMap(data);
-            return Optional.of(user);
-        } else {
-            return Optional.empty();
-        }
+        User user = fromMap(data);
+        return Optional.ofNullable(user);
     }
 
     @Override
-    protected Void handleUpdate(Jedis jedis, User user) {
-        if (jedis.exists("user:" + user.getId())) {
-            findById(user.getId()).map(u -> {
-                u.setEmail(user.getEmail());
-                u.setUsername(user.getUsername());
-                u.setModifiedTime(System.currentTimeMillis());
-                return u;
-            }).ifPresent(u -> jedis.hmset("user:" + user.getId(), user.toMap()));
-        }
-        return null;
-    }
-
-    @Override
-    protected Void handleDelete(Jedis jedis, Long entityId) {
+    protected Void handleDelete(Jedis jedis, Long userId) {
         throw new UnsupportedOperationException("not yet implemented");
     }
 
     @Override
-    public Optional<User> findByUsername(String username) {
-        if (StringUtils.isEmpty(username)) {
-            throw new IllegalArgumentException("username is null");
+    protected User fromMap(Map<String, String> map) {
+        if (map == null || map.isEmpty()) {
+            return null;
         }
-        return tryWithJedis(jedis -> {
-            String userId = jedis.get("username.to.id:" + username);
-            if (userId == null) {
-                return Optional.empty();
-            }
-            return findById(Long.valueOf(userId));
-        });
+
+        User user = new User();
+        user.setId(Long.valueOf(map.get("id")));
+        user.setEmail(map.get("email"));
+        user.setUsername(map.get("username"));
+        user.setPassword(map.get("password"));
+        user.setKarma(Long.valueOf(map.get("karma")));
+        user.setCreatedTime(Long.valueOf(map.get("createdTime")));
+        user.setModifiedTime(Long.valueOf(map.get("modifiedTime")));
+        return user;
+    }
+
+    @Override
+    protected Map<String, String> toMap(User user) {
+        Preconditions.checkNotNull(user, "user is null");
+
+        Map<String, String> result = new HashMap<>();
+        result.put("id", String.valueOf(user.getId()));
+        result.put("email", user.getEmail());
+        result.put("username", user.getUsername());
+        result.put("password", user.getPassword());
+        result.put("karma", String.valueOf(user.getKarma()));
+        result.put("createdTime", String.valueOf(user.getCreatedTime()));
+        result.put("modifiedTime", String.valueOf(user.getModifiedTime()));
+        return result;
     }
 }
