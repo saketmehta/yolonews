@@ -5,7 +5,6 @@ import com.google.inject.Inject;
 import com.yolonews.auth.Secured;
 import com.yolonews.votes.Vote;
 import com.yolonews.votes.VoteService;
-import com.yolonews.votes.VoteType;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -59,7 +58,7 @@ public class PostAPI {
         Vote vote = new Vote();
         vote.setPostId(postId);
         vote.setUserId(Long.valueOf(userId));
-        VoteType voteType = Enums.getIfPresent(VoteType.class, dto.voteType)
+        Vote.VoteType voteType = Enums.getIfPresent(Vote.VoteType.class, dto.voteType)
                 .toJavaUtil()
                 .orElseThrow(() -> new BadRequestException("invalid vote type"));
         vote.setVoteType(voteType);

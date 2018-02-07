@@ -14,7 +14,6 @@ import io.dropwizard.setup.Environment;
  * @author saket.mehta
  */
 class YoloNewsApp extends Application<YoloNewsConfig> {
-
     public static void main(String[] args) throws Exception {
         new YoloNewsApp().run(args);
     }

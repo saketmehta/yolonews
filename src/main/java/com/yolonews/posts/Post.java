@@ -18,6 +18,7 @@ public class Post extends BaseEntity implements Mappable {
     private Long rank;
     private Long upvotes;
     private Long downvotes;
+    private Boolean deleted;
 
     @Override
     public void fromMap(Map<String, String> map) {
@@ -111,5 +112,13 @@ public class Post extends BaseEntity implements Mappable {
 
     public void setDownvotes(Long downvotes) {
         this.downvotes = downvotes;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }

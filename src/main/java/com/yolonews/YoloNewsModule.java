@@ -3,6 +3,7 @@ package com.yolonews;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.yolonews.auth.*;
+import com.yolonews.common.JedisPoolProvider;
 import com.yolonews.posts.PostDAO;
 import com.yolonews.posts.PostDAORedis;
 import com.yolonews.posts.PostService;

@@ -55,4 +55,9 @@ public class Vote extends BaseEntity implements Mappable {
     public Map<String, String> toMap() {
         throw new UnsupportedOperationException("no need for this yet");
     }
+
+    public enum VoteType {
+        UP,
+        DOWN
+    }
 }
