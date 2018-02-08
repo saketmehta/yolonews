@@ -2,22 +2,17 @@ package com.yolonews.common;
 
 import com.google.common.base.Preconditions;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static com.yolonews.common.JedisProvider.JEDIS_POOL;
+
 /**
  * @author saket.mehta
  */
 public abstract class AbstractDaoRedis<Entity, ID> implements CrudDao<Entity, ID> {
-    private final JedisPool jedisPool;
-
-    protected AbstractDaoRedis(JedisPool jedisPool) {
-        this.jedisPool = jedisPool;
-    }
-
     @Override
     public ID save(Entity entity) {
         Preconditions.checkNotNull(entity, "Entity is null");
@@ -37,7 +32,7 @@ public abstract class AbstractDaoRedis<Entity, ID> implements CrudDao<Entity, ID
     }
 
     protected <E> E tryWithJedis(Function<Jedis, E> function) {
-        try (Jedis jedis = jedisPool.getResource()) {
+        try (Jedis jedis = JEDIS_POOL.getResource()) {
             return function.apply(jedis);
         }
     }

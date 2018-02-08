@@ -1,11 +1,9 @@
 package com.yolonews.auth;
 
 import com.google.common.base.Preconditions;
-import com.google.inject.Inject;
 import com.yolonews.common.AbstractDaoRedis;
 import org.apache.commons.lang3.StringUtils;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
 
 import java.util.Map;
 import java.util.Optional;
@@ -14,11 +12,6 @@ import java.util.Optional;
  * @author saket.mehta
  */
 public class AuthDAORedis extends AbstractDaoRedis<String, String> implements AuthDAO {
-    @Inject
-    public AuthDAORedis(JedisPool jedisPool) {
-        super(jedisPool);
-    }
-
     @Override
     public Optional<Long> findUserByToken(String token) {
         Preconditions.checkArgument(StringUtils.isEmpty(token), "token is empty");

@@ -1,11 +1,9 @@
 package com.yolonews.auth;
 
 import com.google.common.base.Preconditions;
-import com.google.inject.Inject;
 import com.yolonews.common.AbstractDaoRedis;
 import org.apache.commons.lang3.StringUtils;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,11 +13,6 @@ import java.util.Optional;
  * @author saket.mehta
  */
 public class UserDaoRedis extends AbstractDaoRedis<User, Long> implements UserDao {
-    @Inject
-    public UserDaoRedis(JedisPool jedisPool) {
-        super(jedisPool);
-    }
-
     @Override
     public Optional<User> findByUsername(String username) {
         Preconditions.checkArgument(StringUtils.isEmpty(username), "username is empty");

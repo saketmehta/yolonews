@@ -1,9 +1,7 @@
 package com.yolonews;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
 import com.yolonews.auth.*;
-import com.yolonews.common.JedisPoolProvider;
 import com.yolonews.posts.PostDao;
 import com.yolonews.posts.PostDaoRedis;
 import com.yolonews.posts.PostService;
@@ -12,7 +10,6 @@ import com.yolonews.votes.VoteDao;
 import com.yolonews.votes.VoteDaoRedis;
 import com.yolonews.votes.VoteService;
 import com.yolonews.votes.VoteServiceImpl;
-import redis.clients.jedis.JedisPool;
 
 /**
  * @author saket.mehta
@@ -20,8 +17,6 @@ import redis.clients.jedis.JedisPool;
 class YoloNewsModule extends AbstractModule {
     @Override
     protected void configure() {
-        bind(JedisPool.class).toProvider(JedisPoolProvider.class).in(Singleton.class);
-
         bind(AuthDAO.class).to(AuthDAORedis.class);
         bind(UserDao.class).to(UserDaoRedis.class);
         bind(PostDao.class).to(PostDaoRedis.class);
