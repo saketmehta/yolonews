@@ -42,40 +42,7 @@ public class PostDaoRedis extends AbstractDaoRedis<Post, Long> implements PostDa
     }
 
     @Override
-    protected Post fromMap(Map<String, String> map) {
-        if (map == null || map.isEmpty()) {
-            return null;
-        }
-
-        Post post = new Post();
-        post.setId(Long.valueOf(map.get("id")));
-        post.setTitle(map.get("title"));
-        post.setUrl(map.get("url"));
-        post.setUserId(map.get("userId"));
-        post.setScore(Long.valueOf(map.get("score")));
-        post.setRank(Long.valueOf(map.get("rank")));
-        post.setUpvotes(Long.valueOf(map.get("upvotes")));
-        post.setDownvotes(Long.valueOf(map.get("downvotes")));
-        post.setCreatedTime(Long.valueOf(map.get("createdTime")));
-        post.setModifiedTime(Long.valueOf(map.get("modifiedTime")));
-        return post;
-    }
-
-    @Override
-    protected Map<String, String> toMap(Post post) {
-        Preconditions.checkNotNull(post, "post is null");
-
-        Map<String, String> map = new HashMap<>();
-        map.put("id", String.valueOf(post.getId()));
-        map.put("title", post.getTitle());
-        map.put("url", post.getUrl());
-        map.put("userId", post.getUserId());
-        map.put("score", String.valueOf(post.getScore()));
-        map.put("rank", String.valueOf(post.getRank()));
-        map.put("upvotes", String.valueOf(post.getUpvotes()));
-        map.put("downvotes", String.valueOf(post.getDownvotes()));
-        map.put("createdTime", String.valueOf(post.getCreatedTime()));
-        map.put("modifiedTime", String.valueOf(post.getModifiedTime()));
-        return map;
+    protected Class<Post> getEntityType() {
+        return Post.class;
     }
 }

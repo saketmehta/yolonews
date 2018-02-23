@@ -15,7 +15,7 @@ import java.util.Optional;
 public class UserDaoRedis extends AbstractDaoRedis<User, Long> implements UserDao {
     @Override
     public Optional<User> findByUsername(String username) {
-        Preconditions.checkArgument(StringUtils.isEmpty(username), "username is empty");
+        Preconditions.checkArgument(StringUtils.isNotEmpty(username), "username is empty");
 
         return tryWithJedis(jedis -> {
             String userId = jedis.get("username.to.id:" + username);
@@ -59,34 +59,7 @@ public class UserDaoRedis extends AbstractDaoRedis<User, Long> implements UserDa
     }
 
     @Override
-    protected User fromMap(Map<String, String> map) {
-        if (map == null || map.isEmpty()) {
-            return null;
-        }
-
-        User user = new User();
-        user.setId(Long.valueOf(map.get("id")));
-        user.setEmail(map.get("email"));
-        user.setUsername(map.get("username"));
-        user.setPassword(map.get("password"));
-        user.setKarma(Long.valueOf(map.get("karma")));
-        user.setCreatedTime(Long.valueOf(map.get("createdTime")));
-        user.setModifiedTime(Long.valueOf(map.get("modifiedTime")));
-        return user;
-    }
-
-    @Override
-    protected Map<String, String> toMap(User user) {
-        Preconditions.checkNotNull(user, "user is null");
-
-        Map<String, String> result = new HashMap<>();
-        result.put("id", String.valueOf(user.getId()));
-        result.put("email", user.getEmail());
-        result.put("username", user.getUsername());
-        result.put("password", user.getPassword());
-        result.put("karma", String.valueOf(user.getKarma()));
-        result.put("createdTime", String.valueOf(user.getCreatedTime()));
-        result.put("modifiedTime", String.valueOf(user.getModifiedTime()));
-        return result;
+    protected Class<User> getEntityType() {
+        return User.class;
     }
 }

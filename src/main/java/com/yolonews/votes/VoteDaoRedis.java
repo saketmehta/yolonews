@@ -41,12 +41,7 @@ public class VoteDaoRedis extends AbstractDaoRedis<Vote, Long> implements VoteDa
     }
 
     @Override
-    protected Vote fromMap(Map<String, String> map) {
-        throw new UnsupportedOperationException("no need for this yet");
-    }
-
-    @Override
-    protected Map<String, String> toMap(Vote vote) {
-        throw new UnsupportedOperationException("no need for this yet");
+    protected Class<Vote> getEntityType() {
+        return Vote.class;
     }
 }

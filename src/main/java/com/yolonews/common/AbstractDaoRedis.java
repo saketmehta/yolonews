@@ -3,6 +3,9 @@ package com.yolonews.common;
 import com.google.common.base.Preconditions;
 import redis.clients.jedis.Jedis;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -43,7 +46,54 @@ public abstract class AbstractDaoRedis<Entity, ID> implements CrudDao<Entity, ID
 
     protected abstract Void handleDelete(Jedis jedis, ID entityId);
 
-    protected abstract Entity fromMap(Map<String, String> map);
+    protected abstract Class<Entity> getEntityType();
 
-    protected abstract Map<String, String> toMap(Entity entity);
+    protected Entity fromMap(Map<String, String> map) {
+        try {
+            Entity entity = getEntityType().getDeclaredConstructor().newInstance();
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                Class<?> curr = getEntityType();
+                while (curr != null) {
+                    try {
+                        Field field = curr.getDeclaredField(entry.getKey());
+                        field.setAccessible(true);
+                        Class<?> fieldType = field.getType();
+                        if (fieldType.isAssignableFrom(long.class)) {
+                            field.set(entity, Long.parseLong(entry.getValue()));
+                        } else {
+                            field.set(entity, entry.getValue());
+                        }
+                        break;
+                    } catch (NoSuchFieldException e) {
+                        if (curr.getSuperclass() == null) {
+                            throw e;
+                        }
+                        curr = curr.getSuperclass();
+                    }
+                }
+            }
+            return entity;
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException | NoSuchFieldException e) {
+            throw new IllegalArgumentException("couldn't convert from map", e);
+        }
+    }
+
+    protected Map<String, String> toMap(Entity entity) {
+        Map<String, String> result = new HashMap<>();
+        Class<?> aClass = entity.getClass();
+        while (aClass != null) {
+            Field[] fields = aClass.getDeclaredFields();
+            for (Field field : fields) {
+                try {
+                    String fieldName = field.getName();
+                    Object o = field.get(entity);
+                    result.put(fieldName, o.toString());
+                } catch (IllegalAccessException e) {
+                    throw new IllegalArgumentException("couldn't convert to map", e);
+                }
+            }
+            aClass = aClass.getSuperclass();
+        }
+        return result;
+    }
 }
