@@ -6,18 +6,9 @@ import com.yolonews.common.BaseEntity;
  * @author saket.mehta
  */
 public class Vote extends BaseEntity {
-    private long id;
     private VoteType voteType;
     private long userId;
     private long postId;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public VoteType getVoteType() {
         return voteType;

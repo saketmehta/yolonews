@@ -1,14 +1,15 @@
 package com.yolonews.auth;
 
 import java.util.Optional;
+import java.util.OptionalLong;
 
 /**
  * @author saket.mehta
  */
 public interface UserService {
-    Long createUser(User user);
+    OptionalLong createUser(User user);
 
     Optional<User> fetchUser(Long userId);
 
-    void updateUser(Long userId, String newUsername, String newEmail);
+    void updateUser(Long userId, User user);
 }

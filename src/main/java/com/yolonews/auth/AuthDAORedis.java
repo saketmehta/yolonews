@@ -1,17 +1,18 @@
 package com.yolonews.auth;
 
 import com.google.common.base.Preconditions;
-import com.yolonews.common.AbstractDaoRedis;
 import org.apache.commons.lang3.StringUtils;
 import redis.clients.jedis.Jedis;
 
-import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+
+import static com.yolonews.common.JedisProvider.JEDIS_POOL;
 
 /**
  * @author saket.mehta
  */
-public class AuthDAORedis extends AbstractDaoRedis<String, String> implements AuthDAO {
+public class AuthDAORedis implements AuthDAO {
     @Override
     public Optional<Long> findUserByToken(String token) {
         Preconditions.checkArgument(StringUtils.isNotEmpty(token), "token is empty");
@@ -40,23 +41,9 @@ public class AuthDAORedis extends AbstractDaoRedis<String, String> implements Au
         tryWithJedis(jedis -> jedis.del("auth:" + token));
     }
 
-    @Override
-    protected String handleSave(Jedis jedis, String token) {
-        throw new UnsupportedOperationException("not yet implemented");
-    }
-
-    @Override
-    protected Optional<String> handleFindById(Jedis jedis, String entityId) {
-        throw new UnsupportedOperationException("not yet implemented");
-    }
-
-    @Override
-    protected Void handleDelete(Jedis jedis, String entityId) {
-        throw new UnsupportedOperationException("not yet implemented");
-    }
-
-    @Override
-    protected Class<String> getEntityType() {
-        return null;
+    private <E> E tryWithJedis(Function<Jedis, E> function) {
+        try (Jedis jedis = JEDIS_POOL.getResource()) {
+            return function.apply(jedis);
+        }
     }
 }

@@ -11,4 +11,8 @@ public interface AuthService {
     void revokeToken(String token);
 
     Optional<User> verifyToken(String token);
+
+    boolean validatePassword(String username, String password);
+
+    String hashPassword(String plaintext);
 }

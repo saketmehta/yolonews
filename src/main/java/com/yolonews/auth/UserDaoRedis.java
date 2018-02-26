@@ -5,7 +5,6 @@ import com.yolonews.common.AbstractDaoRedis;
 import org.apache.commons.lang3.StringUtils;
 import redis.clients.jedis.Jedis;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -16,7 +15,6 @@ public class UserDaoRedis extends AbstractDaoRedis<User, Long> implements UserDa
     @Override
     public Optional<User> findByUsername(String username) {
         Preconditions.checkArgument(StringUtils.isNotEmpty(username), "username is empty");
-
         return tryWithJedis(jedis -> {
             String userId = jedis.get("username.to.id:" + username);
             if (StringUtils.isEmpty(userId)) {
@@ -28,18 +26,14 @@ public class UserDaoRedis extends AbstractDaoRedis<User, Long> implements UserDa
 
     @Override
     protected Long handleSave(Jedis jedis, User user) {
-        long now = System.currentTimeMillis();
         if (user.getId() > 0) {
             // update
-            user.setModifiedTime(now);
             jedis.hmset("user:" + user.getId(), toMap(user));
             jedis.set("username.to.id:" + user.getUsername(), String.valueOf(user.getId()));
         } else {
             // create
             Long id = jedis.incr("users.count");
             user.setId(id);
-            user.setCreatedTime(now);
-            user.setModifiedTime(now);
             jedis.hmset("user:" + id, toMap(user));
             jedis.set("username.to.id:" + user.getUsername(), String.valueOf(id));
         }

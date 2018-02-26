@@ -1,10 +1,8 @@
 package com.yolonews.posts;
 
-import com.google.common.base.Preconditions;
 import com.yolonews.common.AbstractDaoRedis;
 import redis.clients.jedis.Jedis;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -14,16 +12,10 @@ import java.util.Optional;
 public class PostDaoRedis extends AbstractDaoRedis<Post, Long> implements PostDao {
     @Override
     protected Long handleSave(Jedis jedis, Post post) {
-        long now = System.currentTimeMillis();
-        if (post.getId() > 0) {
-            // update
-            post.setModifiedTime(now);
-        } else {
+        if (post.getId() <= 0) {
             // create
             Long id = jedis.incr("posts.count");
             post.setId(id);
-            post.setCreatedTime(now);
-            post.setModifiedTime(now);
         }
         jedis.hmset("posts:" + post.getId(), toMap(post));
         return post.getId();

@@ -6,7 +6,6 @@ import com.yolonews.common.BaseEntity;
  * @author saket.mehta
  */
 public class Post extends BaseEntity {
-    private long id;
     private String title;
     private String url;
     private String userId;
@@ -15,14 +14,6 @@ public class Post extends BaseEntity {
     private long upvotes;
     private long downvotes;
     private boolean deleted;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getTitle() {
         return title;

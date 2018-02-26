@@ -8,6 +8,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.util.Optional;
+import java.util.OptionalLong;
 
 /**
  * @author saket.mehta
@@ -17,10 +18,12 @@ import java.util.Optional;
 @Produces(MediaType.APPLICATION_JSON)
 public class UserAPI {
     private final UserService userService;
+    private final AuthService authService;
 
     @Inject
-    public UserAPI(UserService userService) {
+    public UserAPI(UserService userService, AuthService authService) {
         this.userService = userService;
+        this.authService = authService;
     }
 
     @GET
@@ -45,8 +48,12 @@ public class UserAPI {
         if (dto.password == null) {
             throw new BadRequestException("password is empty");
         }
-        Long userId = userService.createUser(dto.toUser());
-        return Response.ok(userId).build();
+        OptionalLong userId = userService.createUser(dto.toUser());
+        if (userId.isPresent()) {
+            return Response.ok(userId.getAsLong()).build();
+        } else {
+            throw new BadRequestException("could not create new user");
+        }
     }
 
     @POST
@@ -58,7 +65,11 @@ public class UserAPI {
         if (!currentUserId.equals(userId)) {
             throw new ForbiddenException();
         }
-        userService.updateUser(userId, dto.username, dto.email);
+        boolean validPassword = authService.validatePassword(dto.username, dto.password);
+        if (!validPassword) {
+            throw new BadRequestException("password is incorrect");
+        }
+        userService.updateUser(userId, dto.toUser());
         return Response.ok().build();
     }
 

@@ -15,11 +15,22 @@ import static com.yolonews.common.JedisProvider.JEDIS_POOL;
 /**
  * @author saket.mehta
  */
-public abstract class AbstractDaoRedis<Entity, ID> implements CrudDao<Entity, ID> {
+public abstract class AbstractDaoRedis<Entity extends BaseEntity, ID> implements CrudDao<Entity, ID> {
     @Override
     public ID save(Entity entity) {
         Preconditions.checkNotNull(entity, "Entity is null");
-        return tryWithJedis(jedis -> handleSave(jedis, entity));
+        long now = System.currentTimeMillis();
+        return tryWithJedis(jedis -> {
+            if (entity.getId() > 0) {
+                // update
+                entity.setModifiedTime(now);
+            } else {
+                // create
+                entity.setCreatedTime(now);
+                entity.setModifiedTime(now);
+            }
+            return handleSave(jedis, entity);
+        });
     }
 
     @Override

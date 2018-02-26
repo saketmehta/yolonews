@@ -4,8 +4,17 @@ package com.yolonews.common;
  * @author saket.mehta
  */
 public abstract class BaseEntity {
+    private long id;
     private long createdTime;
     private long modifiedTime;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public long getCreatedTime() {
         return createdTime;

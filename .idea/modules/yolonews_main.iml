@@ -15,6 +15,7 @@
     <orderEntry type="library" name="Gradle: io.dropwizard:dropwizard-configuration:1.2.2" level="project" />
     <orderEntry type="library" name="Gradle: io.dropwizard:dropwizard-jersey:1.2.2" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.commons:commons-lang3:3.7" level="project" />
+    <orderEntry type="library" name="Gradle: org.mindrot:jbcrypt:0.4" level="project" />
     <orderEntry type="library" name="Gradle: io.dropwizard:dropwizard-request-logging:1.2.2" level="project" />
     <orderEntry type="library" name="Gradle: io.dropwizard:dropwizard-jetty:1.2.2" level="project" />
     <orderEntry type="library" name="Gradle: io.dropwizard:dropwizard-logging:1.2.2" level="project" />
