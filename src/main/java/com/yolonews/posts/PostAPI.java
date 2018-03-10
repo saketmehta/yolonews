@@ -1,10 +1,13 @@
 package com.yolonews.posts;
 
 import com.google.common.base.Enums;
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.yolonews.auth.Secured;
 import com.yolonews.votes.Vote;
 import com.yolonews.votes.VoteService;
+import com.yolonews.votes.VoteType;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -44,10 +47,21 @@ public class PostAPI {
     @POST
     @Secured
     public Response createPost(PostDTO dto, @Context SecurityContext context) {
+        Preconditions.checkArgument(StringUtils.isNotEmpty(dto.title), "no title present");
+        if (StringUtils.isAllEmpty(dto.url, dto.text)) {
+            throw new IllegalArgumentException("at least one of url/title should be present");
+        }
+        if (!isValidUrl(dto.url)) {
+            throw new IllegalArgumentException("url is not valid");
+        }
         String userId = context.getUserPrincipal().getName();
         Post post = dto.toPost();
         Long postId = postService.createPost(post, Long.valueOf(userId));
         return Response.ok(postId).build();
+    }
+
+    private boolean isValidUrl(String url) {
+        return true;
     }
 
     @POST
@@ -55,13 +69,10 @@ public class PostAPI {
     @Secured
     public Response voteOnPost(@PathParam("postId") Long postId, VoteDTO dto, @Context SecurityContext context) {
         String userId = context.getUserPrincipal().getName();
-        Vote vote = new Vote();
-        vote.setPostId(postId);
-        vote.setUserId(Long.valueOf(userId));
-        Vote.VoteType voteType = Enums.getIfPresent(Vote.VoteType.class, dto.voteType)
+        VoteType voteType = Enums.getIfPresent(VoteType.class, dto.voteType)
                 .toJavaUtil()
                 .orElseThrow(() -> new BadRequestException("invalid vote type"));
-        vote.setVoteType(voteType);
+        Vote vote = new Vote(voteType.toString(), Long.valueOf(userId), postId);
         voteService.createVote(vote);
         return Response.ok().build();
     }

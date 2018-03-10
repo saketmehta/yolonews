@@ -7,10 +7,10 @@ import io.dropwizard.Configuration;
  * @author saket.mehta
  */
 class YoloNewsConfig extends Configuration {
-    private Long initialUserKarma;
+    private Long userInitialKarma;
 
     @JsonProperty
-    public Long getInitialUserKarma() {
-        return initialUserKarma;
+    public Long getUserInitialKarma() {
+        return userInitialKarma;
     }
 }

@@ -6,6 +6,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Optional;
+import java.util.OptionalLong;
 
 /**
  * @author saket.mehta
@@ -41,7 +42,12 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public Optional<User> verifyToken(String token) {
-        return authDAO.findUserByToken(token).flatMap(userDAO::findById);
+        OptionalLong userId = authDAO.findUserByToken(token);
+        if (userId.isPresent()) {
+            return userDAO.findById(userId.getAsLong());
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override

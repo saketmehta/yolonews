@@ -10,7 +10,6 @@ public class Post extends BaseEntity {
     private String url;
     private String userId;
     private long score;
-    private long rank;
     private long upvotes;
     private long downvotes;
     private boolean deleted;
@@ -45,14 +44,6 @@ public class Post extends BaseEntity {
 
     public void setScore(long score) {
         this.score = score;
-    }
-
-    public long getRank() {
-        return rank;
-    }
-
-    public void setRank(long rank) {
-        this.rank = rank;
     }
 
     public long getUpvotes() {

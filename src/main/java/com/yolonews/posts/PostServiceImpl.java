@@ -1,6 +1,9 @@
 package com.yolonews.posts;
 
 import com.google.inject.Inject;
+import com.yolonews.votes.Vote;
+import com.yolonews.votes.VoteService;
+import com.yolonews.votes.VoteType;
 
 import java.util.Optional;
 
@@ -9,10 +12,12 @@ import java.util.Optional;
  */
 public class PostServiceImpl implements PostService {
     private final PostDao postDAO;
+    private final VoteService voteService;
 
     @Inject
-    public PostServiceImpl(PostDao postDAO) {
+    public PostServiceImpl(PostDao postDAO, VoteService voteService) {
         this.postDAO = postDAO;
+        this.voteService = voteService;
     }
 
     @Override
@@ -22,6 +27,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Long createPost(Post post, Long userId) {
-        return postDAO.save(post);
+        Long postId = postDAO.save(post);
+        Vote vote = new Vote(VoteType.UP.toString(), userId, postId);
+        voteService.createVote(vote);
+        return postId;
     }
 }

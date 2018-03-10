@@ -1,5 +1,7 @@
 package com.yolonews.posts;
 
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.yolonews.common.AbstractDaoRedis;
 import redis.clients.jedis.Jedis;
 
@@ -10,6 +12,11 @@ import java.util.Optional;
  * @author saket.mehta
  */
 public class PostDaoRedis extends AbstractDaoRedis<Post, Long> implements PostDao {
+    @Inject
+    PostDaoRedis(Provider<Jedis> jedisProvider) {
+        super(jedisProvider);
+    }
+
     @Override
     protected Long handleSave(Jedis jedis, Post post) {
         if (post.getId() <= 0) {
